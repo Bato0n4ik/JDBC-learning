@@ -20,12 +20,18 @@ public class JdbcRunner {
         var begin = LocalDateTime.now();
         System.out.println(getFlightsBBetween(start, begin));*/
 
-        checkMetaData();
+        try{
+            checkMetaData();
+        }
+        finally{
+            System.out.println("\n\t\t\tCalled close POOL CONNECTION function!");
+            ConnectionManager.closePool();
+        }
 
     }
 
     private static void checkMetaData(){
-        try(var connection = ConnectionManager.open()){
+        try(var connection = ConnectionManager.get()){
             var metaData = connection.getMetaData();
             ResultSet catalogs = metaData.getCatalogs();
             while(catalogs.next()){
@@ -65,7 +71,7 @@ public class JdbcRunner {
                 """;
 
         List<Long> list = new ArrayList<>();
-        try(var connection = ConnectionManager.open();
+        try(var connection = ConnectionManager.get();
         var statement = connection.prepareStatement(sql)){
 
             statement.setFetchSize(50);
@@ -97,7 +103,7 @@ public class JdbcRunner {
                 """;
 
         List<Long> list = new ArrayList<>();
-        try(Connection connection = ConnectionManager.open();
+        try(Connection connection = ConnectionManager.get();
         var statement = connection.prepareStatement(sql)){
             statement.setLong(1, flightId);
             var result = statement.executeQuery();

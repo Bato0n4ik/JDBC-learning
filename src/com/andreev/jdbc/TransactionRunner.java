@@ -5,6 +5,7 @@ import org.postgresql.shaded.com.ongres.stringprep.StringPrep;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
+import java.sql.Statement;
 
 public class TransactionRunner {
 
@@ -12,31 +13,25 @@ public class TransactionRunner {
 
         long flightId = 8;
 
-        String sql = "DELETE FROM flight WHERE id = ?";
-        String sqlTwo = "DELETE FROM ticket WHERE flight_id = ?";
+        String sql = "DELETE FROM flight WHERE id = " + flightId;
+        String sqlTwo = "DELETE FROM ticket WHERE flight_id = " + flightId;
         Connection connection = null;
-        PreparedStatement statementOne = null;
-        PreparedStatement statementTwo = null;
+        Statement statement = null;
+
 
         try{
-            connection = ConnectionManager.open();
-            statementTwo = connection.prepareStatement(sqlTwo);
-            statementOne = connection.prepareStatement(sql);
+            connection = ConnectionManager.get();
+            statement = connection.createStatement();
 
             connection.setAutoCommit(false);
 
-            statementOne.setFetchSize(50);
-            statementTwo.setFetchSize(50);
+            statement.addBatch(sqlTwo);
+            statement.addBatch(sql);
 
-            statementOne.setLong(1, flightId);
-            statementTwo.setLong(1, flightId);
+            var resultRequest = statement.executeBatch();
 
-            statementTwo.executeUpdate();
-            if(true){
-                throw new RuntimeException("Ooops!");
-            }
-            statementOne.executeUpdate();
             connection.commit();
+
         }
         catch(Exception exc){
             if(connection != null){
@@ -45,14 +40,11 @@ public class TransactionRunner {
             throw exc;
         }
         finally{
-            if(statementOne != null){
-                statementOne.close();
-            }
-            if(statementTwo != null){
-                statementTwo.close();
-            }
             if(connection != null){
                 connection.close();
+            }
+            if(statement != null){
+                statement.close();
             }
         }
 
