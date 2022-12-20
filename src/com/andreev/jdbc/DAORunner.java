@@ -2,6 +2,7 @@ package com.andreev.jdbc;
 
 import com.andreev.jdbc.dao.TicketDao;
 import com.andreev.jdbc.dto.TicketFilter;
+import com.andreev.jdbc.entity.Flight;
 import com.andreev.jdbc.entity.Ticket;
 
 import java.math.BigDecimal;
@@ -23,15 +24,20 @@ public class DAORunner {
             ticket.setCost(new BigDecimal("129.99"));
             System.out.println(ticket);
         }*/
+
+
         TicketFilter filter = new TicketFilter(10, 0, "A1", null);
         TicketDao.getObject().findAll(filter).forEach(System.out::println);
+
+        //var ticket = TicketDao.getObject().findById(5L);
+        //System.out.println(ticket);
 
     }
 
     public static void update(Ticket ticket){
-
+        Flight flight = ticket.getFlight();
         ticket.setCost(new BigDecimal("1400.65"));
-        ticket.setFlightId(3L);
+        ticket.setFlight(flight);
         ticket.setPassengerName("Andrew");
         ticket.setSeatNo("C5");
         ticket.setPassengerNo("569834");
