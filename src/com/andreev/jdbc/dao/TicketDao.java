@@ -15,9 +15,9 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-public class TicketDao {
+public class TicketDao implements DAO<Ticket, Long>{
 
-    private static volatile TicketDao single = new TicketDao();
+    private static volatile TicketDao INSTANCE  = new TicketDao();
     private final String SQL_INSERT = """
             INSERT INTO ticket (passenger_no, passenger_name, flight_id, seat_no, cost)
              VALUES (?,?,?,?,?);
@@ -50,9 +50,9 @@ public class TicketDao {
 
     private TicketDao(){}
 
-    public static TicketDao getObject(){
-        synchronized(single){
-            return single;
+    public static TicketDao getInstance(){
+        synchronized(TicketDao.class ){
+            return INSTANCE ;
         }
     }
 
@@ -110,7 +110,8 @@ public class TicketDao {
         return ticketList;
     }
 
-    public Optional<Ticket> findById(long id){
+
+    public Optional<Ticket> findById(Long id){
         Ticket ticket = null;
         try(Connection connection = ConnectionManager.get();
         var prepareStatement = connection.prepareStatement(SQL_SELECT_BY_ID)){
@@ -170,7 +171,9 @@ public class TicketDao {
         return ticket;
     }
 
-    public boolean delete(long id){
+
+
+    public boolean delete(Long id){
         try(Connection connection = ConnectionManager.get();
         var prepareStatement = connection.prepareStatement(SQL_DELETE)){
 
@@ -198,7 +201,7 @@ public class TicketDao {
         return new Ticket(result.getLong("id"),
                 result.getString("passenger_no"),
                 result.getString("passenger_name"),
-                flight,
+                FlightDao.getInstance().findById(result.getLong("flight_id"), result.getStatement().getConnection()).orElse(null),
                 result.getString("seat_no"),
                 result.getBigDecimal("cost"));
     }

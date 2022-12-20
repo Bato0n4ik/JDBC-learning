@@ -3,7 +3,7 @@ package com.andreev.jdbc.entity;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 
-public record Flight (long id,
+public record Flight (Long id,
                       String flightNo,
                       LocalDateTime departureDate,
                       String departureAirportCode,

@@ -3,7 +3,7 @@ package com.andreev.jdbc.entity;
 import java.math.BigDecimal;
 
 public class Ticket {
-    private long id;
+    private Long id;
     private String passengerNo;
     private String passengerName;
     private Flight flight;

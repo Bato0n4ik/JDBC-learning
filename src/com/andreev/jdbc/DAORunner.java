@@ -14,10 +14,10 @@ public class DAORunner {
         //Ticket ticket = new Ticket();
         //update(ticket);
 
-        //TicketDao obj = TicketDao.getObject();
+        //TicketDao obj = TicketDao.getInstance();
         //System.out.println(obj.delete(60L));
 
-        /*Ticket ticket = TicketDao.getObject().findById(21).orElse(null);
+        /*Ticket ticket = TicketDao.getInstance.findById(21).orElse(null);
         System.out.println("Selected ticket dy id: " + ticket);
         if(ticket != null)
         {
@@ -26,11 +26,11 @@ public class DAORunner {
         }*/
 
 
-        TicketFilter filter = new TicketFilter(10, 0, "A1", null);
-        TicketDao.getObject().findAll(filter).forEach(System.out::println);
+        //TicketFilter filter = new TicketFilter(10, 0, "A1", null);
+        //TicketDao.getInstance().findAll(filter).forEach(System.out::println);
 
-        //var ticket = TicketDao.getObject().findById(5L);
-        //System.out.println(ticket);
+        var ticket = TicketDao.getInstance().findById(5L);
+        System.out.println(ticket);
 
     }
 
@@ -41,7 +41,7 @@ public class DAORunner {
         ticket.setPassengerName("Andrew");
         ticket.setSeatNo("C5");
         ticket.setPassengerNo("569834");
-        TicketDao obj = TicketDao.getObject();
+        TicketDao obj = TicketDao.getInstance();
         System.out.println(obj.insertInDB(ticket));
 
     }
